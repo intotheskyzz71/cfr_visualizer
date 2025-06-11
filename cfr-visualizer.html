@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CFR Visualizer v3 - Enhanced Money Flow Investigation Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        .layer-label {
+            fill: #1a73e8;
+            font-weight: 600;
+            font-size: 14px;
+            font-family: 'Sarabun', sans-serif;
+            pointer-events: none;
+        }
+        
+        .layer-label-bg {
+            fill: white;
+            stroke: #1a73e8;
+            stroke-width: 2;
+            rx: 6;
+            transition: all 0.2s;
+        }
+        
+        .layer-labels g:hover .layer-label-bg {
+            stroke-width: 3;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f5;
+            color: #1a1a1a;
+            overflow: hidden;
+        }
+        
+        .container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 10px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .version-badge {
+            background: #1a73e8;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .file-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 6px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .btn-primary {
+            background: #1a73e8;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1557b0;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #1a1a1a;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8f9fa;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            color: #666;
+        }
+        
+        .main-content {
+            flex: 1;
+            position: relative;
+            background: #fafafa;
+            overflow: hidden;
+        }
+        
+        #network-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        .controls-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Network styles */
+        .node {
+            cursor: pointer;
+        }
+        
+        .node:hover .node-rect {
+            stroke: #1a73e8;
+            stroke-width: 3;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+        
+        .node-rect {
+            fill: white;
+            stroke: #ddd;
+            stroke-width: 2;
+            rx: 8;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        
+        .node-rect.victim {
+            fill: #e8f5e9;
+            stroke: #4caf50;
+            stroke-width: 3;
+        }
+        
+        .node-rect.intermediate {
+            fill: #fff3e0;
+            stroke: #ff9800;
+        }
+        
+        .node-label {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 13px;
+            pointer-events: none;
+        }
+        
+        .link {
+            fill: none;
+            stroke: #999;
+            stroke-width: 2;
+            opacity: 0.6;
+            transition: all 0.3s;
+        }
+        
+        .link:hover {
+            stroke: #1a73e8;
+            opacity: 1;
+        }
+        
+        .link-label {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 11px;
+            fill: #666;
+            background: white;
+            padding: 2px 4px;
+        }
+        
+        .link-label-bg {
+            fill: white;
+            stroke: #ddd;
+            stroke-width: 1;
+            rx: 3;
+        }
+        
+        .tooltip {
+            position: absolute;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border-radius: 8px;
+            pointer-events: none;
+            font-size: 0.875rem;
+            font-family: 'Sarabun', sans-serif;
+            z-index: 1000;
+            display: none;
+            max-width: 350px;
+            line-height: 1.6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #e0e0e0;
+            border-top-color: #1a73e8;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 2v10l6 6"/>
+                    </svg>
+                    CFR Visualizer
+                    <span class="version-badge">v3.0</span>
+                </h1>
+                
+                <div class="file-controls">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
+                        <label for="fileInput" class="btn btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="17 8 12 3 7 8"/>
+                                <line x1="12" y1="3" x2="12" y2="15"/>
+                            </svg>
+                            เลือกไฟล์
+                        </label>
+                    </div>
+                    <div id="fileInfo" class="file-info" style="display: none;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                        </svg>
+                        <span id="fileName"></span>
+                    </div>
+                    <button class="btn btn-primary" id="analyzeBtn" disabled>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"/>
+                            <path d="m21 21-4.35-4.35"/>
+                        </svg>
+                        วิเคราะห์
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div id="network-container">
+                <svg id="network"></svg>
+            </div>
+            
+            <div class="controls-overlay">
+                <button class="btn btn-secondary" id="zoomInBtn" title="ซูมเข้า">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                        <line x1="11" y1="8" x2="11" y2="14"/>
+                        <line x1="8" y1="11" x2="14" y2="11"/>
+                    </svg>
+                </button>
+                <button class="btn btn-secondary" id="zoomOutBtn" title="ซูมออก">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                        <line x1="8" y1="11" x2="14" y2="11"/>
+                    </svg>
+                </button>
+                <button class="btn btn-secondary" id="fitBtn" title="พอดีหน้าจอ">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                    </svg>
+                </button>
+                <button class="btn btn-secondary" id="resetBtn" title="รีเซ็ต">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="1 4 1 10 7 10"/>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+                <div>
+                    <div class="spinner"></div>
+                    <p style="margin-top: 10px; color: #666; font-family: 'Sarabun', sans-serif;">กำลังประมวลผล...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="tooltip" id="tooltip"></div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        // Application state
+        const app = {
+            data: null,
+            network: null,
+            simulation: null,
+            zoom: null,
+            svg: null,
+            g: null,
+            pinnedNode: null // Track clicked node for persistent tooltip
+        };
+
+        // Utility functions
+        const utils = {
+            thaiMonths: {
+                'มกราคม': '01', 'กุมภาพันธ์': '02', 'มีนาคม': '03', 'เมษายน': '04',
+                'พฤษภาคม': '05', 'มิถุนายน': '06', 'กรกฎาคม': '07', 'สิงหาคม': '08',
+                'กันยายน': '09', 'ตุลาคม': '10', 'พฤศจิกายน': '11', 'ธันวาคม': '12',
+                'ม.ค.': '01', 'ก.พ.': '02', 'มี.ค.': '03', 'เม.ย.': '04',
+                'พ.ค.': '05', 'มิ.ย.': '06', 'ก.ค.': '07', 'ส.ค.': '08',
+                'ก.ย.': '09', 'ต.ค.': '10', 'พ.ย.': '11', 'ธ.ค.': '12'
+            },
+            
+            thaiToArabic(str) {
+                if (!str) return str;
+                const thaiNumbers = '๐๑๒๓๔๕๖๗๘๙';
+                const arabicNumbers = '0123456789';
+                let result = str.toString();
+                for (let i = 0; i < thaiNumbers.length; i++) {
+                    result = result.replace(new RegExp(thaiNumbers[i], 'g'), arabicNumbers[i]);
+                }
+                return result;
+            },
+            
+            parseDate(dateValue) {
+                if (!dateValue) return null;
+                try {
+                    let dateStr = this.thaiToArabic(dateValue.toString());
+                    
+                    // Excel serial date
+                    if (!isNaN(dateStr) && dateStr > 25569) {
+                        const date = new Date((dateStr - 25569) * 86400 * 1000);
+                        return date;
+                    }
+                    
+                    // Thai date format (e.g., "13 มีนาคม 2568")
+                    for (let [thaiMonth, monthNum] of Object.entries(this.thaiMonths)) {
+                        if (dateStr.includes(thaiMonth)) {
+                            const parts = dateStr.split(' ');
+                            const day = parseInt(parts[0]);
+                            const month = parseInt(monthNum) - 1;
+                            let year = parseInt(parts[2]);
+                            // Convert Buddhist year to Gregorian if needed
+                            if (year > 2500) {
+                                year = year - 543;
+                            }
+                            return new Date(year, month, day);
+                        }
+                    }
+                    
+                    // DD/MM/YYYY format
+                    const dateRegex = /(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/;
+                    const match = dateStr.match(dateRegex);
+                    if (match) {
+                        const day = parseInt(match[1]);
+                        const month = parseInt(match[2]) - 1;
+                        let year = parseInt(match[3]);
+                        // Convert Buddhist year to Gregorian if needed
+                        if (year > 2500) {
+                            year = year - 543;
+                        }
+                        return new Date(year, month, day);
+                    }
+                    
+                    // YYYY-MM-DD format
+                    const isoRegex = /(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/;
+                    const isoMatch = dateStr.match(isoRegex);
+                    if (isoMatch) {
+                        let year = parseInt(isoMatch[1]);
+                        const month = parseInt(isoMatch[2]) - 1;
+                        const day = parseInt(isoMatch[3]);
+                        // Convert Buddhist year to Gregorian if needed
+                        if (year > 2500) {
+                            year = year - 543;
+                        }
+                        return new Date(year, month, day);
+                    }
+                    
+                    return new Date(dateStr);
+                } catch (e) {
+                    console.error('Date parsing error:', e);
+                    return null;
+                }
+            },
+            
+            parseTime(timeValue) {
+                if (!timeValue) return null;
+                try {
+                    let timeStr = this.thaiToArabic(timeValue.toString());
+                    
+                    // Excel time
+                    if (!isNaN(timeStr) && timeStr < 1) {
+                        const totalMinutes = Math.round(timeStr * 24 * 60);
+                        const hours = Math.floor(totalMinutes / 60);
+                        const minutes = totalMinutes % 60;
+                        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+                    }
+                    
+                    // HH:MM:SS format
+                    const timeRegex = /(\d{1,2}):(\d{2})/;
+                    const match = timeStr.match(timeRegex);
+                    if (match) {
+                        const hours = match[1].padStart(2, '0');
+                        const minutes = match[2];
+                        return `${hours}:${minutes}`;
+                    }
+                    
+                    return timeStr;
+                } catch (e) {
+                    return timeValue;
+                }
+            },
+            
+            parseAmount(amountValue) {
+                if (!amountValue) return 0;
+                try {
+                    let amountStr = this.thaiToArabic(amountValue.toString());
+                    amountStr = amountStr.replace(/[฿$,]/g, '').trim();
+                    const amount = parseFloat(amountStr);
+                    return isNaN(amount) ? 0 : amount;
+                } catch (e) {
+                    return 0;
+                }
+            },
+            
+            formatAmount(amount) {
+                return amount.toLocaleString('th-TH', {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2
+                });
+            },
+            
+            formatDate(date) {
+                if (!date) return '';
+                const day = date.getDate().toString().padStart(2, '0');
+                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                const year = date.getFullYear() + 543;
+                return `${day}/${month}/${year}`;
+            }
+        };
+
+        // Network visualization module
+        const networkVis = {
+            init() {
+                const container = document.getElementById('network-container');
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                
+                app.svg = d3.select('#network')
+                    .attr('width', width)
+                    .attr('height', height);
+                
+                // Clear previous
+                app.svg.selectAll('*').remove();
+                
+                // Create main group
+                app.g = app.svg.append('g').attr('class', 'main-group');
+                
+                // Create defs for markers
+                const defs = app.svg.append('defs');
+                
+                // Create arrow marker with better positioning
+                defs.append('marker')
+                    .attr('id', 'arrow-default')
+                    .attr('viewBox', '0 -5 10 10')
+                    .attr('refX', 10) // Position arrow at tip
+                    .attr('refY', 0)
+                    .attr('markerWidth', 10)
+                    .attr('markerHeight', 10)
+                    .attr('orient', 'auto')
+                    .attr('markerUnits', 'userSpaceOnUse')
+                    .append('path')
+                    .attr('d', 'M0,-5L10,0L0,5')
+                    .attr('fill', '#666');
+                
+                // Create arrow for victim links
+                defs.append('marker')
+                    .attr('id', 'arrow-victim')
+                    .attr('viewBox', '0 -5 10 10')
+                    .attr('refX', 10)
+                    .attr('refY', 0)
+                    .attr('markerWidth', 10)
+                    .attr('markerHeight', 10)
+                    .attr('orient', 'auto')
+                    .attr('markerUnits', 'userSpaceOnUse')
+                    .append('path')
+                    .attr('d', 'M0,-5L10,0L0,5')
+                    .attr('fill', '#4caf50');
+                
+                // Setup zoom
+                app.zoom = d3.zoom()
+                    .scaleExtent([0.1, 4])
+                    .on('zoom', (event) => {
+                        app.g.attr('transform', event.transform);
+                    });
+                
+                app.svg.call(app.zoom);
+                
+                return { width, height };
+            },
+            
+            render(data) {
+                const { width, height } = this.init();
+                
+                // Calculate hierarchical layout
+                const layers = this.calculateLayers(data.nodes, data.links);
+                
+                // Position nodes
+                const nodeSpacing = 220;
+                const layerSpacing = 180;
+                const startY = 100;
+                
+                layers.forEach((layer, layerIndex) => {
+                    const layerWidth = layer.length * nodeSpacing;
+                    const startX = (width - layerWidth) / 2 + nodeSpacing / 2;
+                    
+                    layer.forEach((node, nodeIndex) => {
+                        node.x = startX + nodeIndex * nodeSpacing;
+                        node.y = startY + layerIndex * layerSpacing;
+                        node.layer = layerIndex;
+                    });
+                });
+                
+                // Create layer labels
+                const layerLabelGroup = app.g.append('g').attr('class', 'layer-labels');
+                
+                layers.forEach((layer, layerIndex) => {
+                    // Find leftmost node in this layer
+                    const leftmostX = Math.min(...layer.map(node => node.x));
+                    const labelX = leftmostX - 150; // Position to the left of leftmost node
+                    const labelY = startY + layerIndex * layerSpacing;
+                    
+                    const labelGroup = layerLabelGroup.append('g')
+                        .attr('transform', `translate(${labelX}, ${labelY})`)
+                        .style('cursor', 'move')
+                        .call(this.dragLabel());
+                    
+                    // Store initial position for drag
+                    labelGroup.datum({x: labelX, y: labelY});
+                    
+                    // Background rectangle
+                    const bg = labelGroup.append('rect')
+                        .attr('class', 'layer-label-bg')
+                        .attr('y', -10)
+                        .attr('height', 20);
+                    
+                    // Label text
+                    const text = labelGroup.append('text')
+                        .attr('class', 'layer-label')
+                        .attr('text-anchor', 'middle')
+                        .attr('x', 0)
+                        .attr('dy', '0.35em')
+                        .text(`บัญชีแถวที่ ${layerIndex}`);
+                    
+                    // Adjust background size
+                    const bbox = text.node().getBBox();
+                    bg.attr('x', -bbox.width/2 - 12)
+                        .attr('width', bbox.width + 24);
+                });
+                
+                // Create links with curved paths
+                const linkGroup = app.g.append('g').attr('class', 'links');
+                
+                const links = linkGroup.selectAll('path')
+                    .data(data.links)
+                    .join('path')
+                    .attr('class', 'link')
+                    .attr('d', d => this.createCurvedPath(d))
+                    .attr('marker-end', d => {
+                        const source = data.nodes.find(n => n.id === d.source);
+                        if (source && source.isVictim) return 'url(#arrow-victim)';
+                        return 'url(#arrow-default)';
+                    })
+                    .attr('stroke-width', d => Math.min(Math.sqrt(d.totalAmount / 100000) + 1, 6));
+                
+                // Create link labels
+                const labelGroup = app.g.append('g').attr('class', 'link-labels');
+                
+                data.links.forEach((link, i) => {
+                    const source = data.nodes.find(n => n.id === link.source);
+                    const target = data.nodes.find(n => n.id === link.target);
+                    const midPoint = this.getCurvedMidpoint(source, target);
+                    
+                    const group = labelGroup.append('g')
+                        .attr('transform', `translate(${midPoint.x}, ${midPoint.y})`);
+                    
+                    // Background
+                    const bg = group.append('rect')
+                        .attr('class', 'link-label-bg');
+                    
+                    // Text
+                    const text = group.append('text')
+                        .attr('class', 'link-label')
+                        .attr('text-anchor', 'middle');
+                    
+                    // Show all transactions
+                    let yOffset = -(link.transactions.length * 14) / 2;
+                    link.transactions.forEach((tx, txIndex) => {
+                        text.append('tspan')
+                            .attr('x', 0)
+                            .attr('dy', txIndex === 0 ? yOffset : 14)
+                            .text(`${utils.formatDate(tx.date)} ${tx.time} ฿${utils.formatAmount(tx.amount)}`);
+                    });
+                    
+                    // Adjust background
+                    const bbox = text.node().getBBox();
+                    bg.attr('x', bbox.x - 4)
+                        .attr('y', bbox.y - 2)
+                        .attr('width', bbox.width + 8)
+                        .attr('height', bbox.height + 4);
+                });
+                
+                // Create nodes
+                const nodeGroup = app.g.append('g').attr('class', 'nodes');
+                
+                const nodes = nodeGroup.selectAll('g')
+                    .data(data.nodes)
+                    .join('g')
+                    .attr('class', 'node')
+                    .attr('transform', d => `translate(${d.x}, ${d.y})`)
+                    .call(this.drag());
+                
+                // Node rectangles
+                const nodeWidth = 180;
+                const nodeHeight = 70;
+                
+                nodes.append('rect')
+                    .attr('class', d => {
+                        if (d.isVictim) return 'node-rect victim';
+                        if (d.layer > 0 && d.layer < layers.length - 1) return 'node-rect intermediate';
+                        return 'node-rect';
+                    })
+                    .attr('x', -nodeWidth/2)
+                    .attr('y', -nodeHeight/2)
+                    .attr('width', nodeWidth)
+                    .attr('height', nodeHeight);
+                
+                // Node text
+                const nodeText = nodes.append('text')
+                    .attr('class', 'node-label')
+                    .attr('text-anchor', 'middle');
+                
+                // Bank and account
+                nodeText.append('tspan')
+                    .attr('x', 0)
+                    .attr('y', -20)
+                    .attr('font-weight', 600)
+                    .attr('font-size', 14)
+                    .text(d => `${d.bank}-${d.account}`);
+                
+                // Name
+                nodeText.append('tspan')
+                    .attr('x', 0)
+                    .attr('y', 0)
+                    .text(d => d.name || '-');
+                
+                // ID or Victim label
+                nodeText.append('tspan')
+                    .attr('x', 0)
+                    .attr('y', 20)
+                    .attr('font-size', 12)
+                    .attr('fill', d => d.isVictim ? '#4caf50' : '#666')
+                    .attr('font-weight', d => d.isVictim ? 600 : 400)
+                    .text(d => {
+                        if (d.isVictim) return '**ผู้เสียหาย**';
+                        return d.personalId ? `ID: ${d.personalId}` : '';
+                    });
+                
+                // Events
+                nodes.on('mouseover', (event, d) => {
+                        // Only show tooltip on hover if no node is pinned
+                        if (!app.pinnedNode) {
+                            this.showTooltip(event, d);
+                        }
+                    })
+                    .on('mouseout', () => {
+                        // Only hide tooltip if no node is pinned
+                        if (!app.pinnedNode) {
+                            this.hideTooltip();
+                        }
+                    })
+                    .on('click', (event, d) => {
+                        event.stopPropagation();
+                        
+                        // Toggle pinned tooltip
+                        if (app.pinnedNode === d.id) {
+                            // Unpin if clicking the same node
+                            app.pinnedNode = null;
+                            this.hideTooltip();
+                        } else {
+                            // Pin tooltip to this node
+                            app.pinnedNode = d.id;
+                            this.showTooltip(event, d);
+                        }
+                    });
+                
+                // Click on background to clear pinned tooltip
+                app.svg.on('click', () => {
+                    if (app.pinnedNode) {
+                        app.pinnedNode = null;
+                        this.hideTooltip();
+                    }
+                });
+                
+                links.on('mouseover', function(event, d) {
+                    d3.select(this)
+                        .attr('stroke', '#1a73e8')
+                        .attr('opacity', 1)
+                        .attr('stroke-width', d => Math.min(Math.sqrt(d.totalAmount / 100000) + 2, 8));
+                })
+                .on('mouseout', function(event, d) {
+                    d3.select(this)
+                        .attr('stroke', null)
+                        .attr('opacity', 0.6)
+                        .attr('stroke-width', d => Math.min(Math.sqrt(d.totalAmount / 100000) + 1, 6));
+                });
+                
+                // Fit to screen
+                setTimeout(() => this.fitToScreen(), 500);
+            },
+            
+            calculateLayers(nodes, links) {
+                // Find victim nodes
+                const victims = nodes.filter(n => n.isVictim);
+                const layers = [];
+                const visited = new Set();
+                
+                // Layer 0: Victims
+                layers[0] = victims;
+                victims.forEach(v => visited.add(v.id));
+                
+                // Build adjacency list
+                const adjacency = new Map();
+                nodes.forEach(n => adjacency.set(n.id, []));
+                links.forEach(link => {
+                    adjacency.get(link.source).push(link.target);
+                });
+                
+                // BFS to assign layers
+                let currentLayer = 0;
+                while (visited.size < nodes.length) {
+                    const nextLayer = [];
+                    
+                    // Find nodes connected to current layer
+                    layers[currentLayer].forEach(node => {
+                        const neighbors = adjacency.get(node.id) || [];
+                        neighbors.forEach(neighborId => {
+                            if (!visited.has(neighborId)) {
+                                visited.add(neighborId);
+                                const neighbor = nodes.find(n => n.id === neighborId);
+                                if (neighbor) nextLayer.push(neighbor);
+                            }
+                        });
+                    });
+                    
+                    if (nextLayer.length > 0) {
+                        currentLayer++;
+                        layers[currentLayer] = nextLayer;
+                    } else {
+                        // Add remaining nodes to last layer
+                        const remaining = nodes.filter(n => !visited.has(n.id));
+                        if (remaining.length > 0) {
+                            currentLayer++;
+                            layers[currentLayer] = remaining;
+                            remaining.forEach(n => visited.add(n.id));
+                        }
+                        break;
+                    }
+                }
+                
+                return layers;
+            },
+            
+            createCurvedPath(d) {
+                const source = app.network.nodes.find(n => n.id === d.source);
+                const target = app.network.nodes.find(n => n.id === d.target);
+                
+                if (!source || !target) return '';
+                
+                const dx = target.x - source.x;
+                const dy = target.y - source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+                
+                // Node dimensions
+                const nodeWidth = 180;
+                const nodeHeight = 70;
+                
+                // Calculate angle from source to target
+                const angle = Math.atan2(dy, dx);
+                
+                // Calculate start point (edge of source node)
+                let sourceX, sourceY;
+                if (Math.abs(dx) > Math.abs(dy) * (nodeWidth / nodeHeight)) {
+                    // Exit from left or right side
+                    sourceX = source.x + (dx > 0 ? nodeWidth / 2 : -nodeWidth / 2);
+                    sourceY = source.y + (dx > 0 ? nodeWidth / 2 : -nodeWidth / 2) * Math.tan(angle);
+                } else {
+                    // Exit from top or bottom
+                    sourceX = source.x + (dy > 0 ? nodeHeight / 2 : -nodeHeight / 2) / Math.tan(angle);
+                    sourceY = source.y + (dy > 0 ? nodeHeight / 2 : -nodeHeight / 2);
+                }
+                
+                // Calculate end point (edge of target node - accounting for arrow)
+                const arrowOffset = 2; // Small offset to prevent arrow overlapping node
+                let targetX, targetY;
+                if (Math.abs(dx) > Math.abs(dy) * (nodeWidth / nodeHeight)) {
+                    // Enter from left or right side
+                    targetX = target.x - (dx > 0 ? nodeWidth / 2 + arrowOffset : -nodeWidth / 2 - arrowOffset);
+                    targetY = target.y - (dx > 0 ? nodeWidth / 2 + arrowOffset : -nodeWidth / 2 - arrowOffset) * Math.tan(angle);
+                } else {
+                    // Enter from top or bottom
+                    targetX = target.x - (dy > 0 ? nodeHeight / 2 + arrowOffset : -nodeHeight / 2 - arrowOffset) / Math.tan(angle);
+                    targetY = target.y - (dy > 0 ? nodeHeight / 2 + arrowOffset : -nodeHeight / 2 - arrowOffset);
+                }
+                
+                // Create curved path
+                const midX = (sourceX + targetX) / 2;
+                const midY = (sourceY + targetY) / 2;
+                const offset = dr * 0.15; // Curve amount
+                
+                // Control point for quadratic curve
+                const controlX = midX - offset * Math.sin(angle);
+                const controlY = midY + offset * Math.cos(angle);
+                
+                return `M${sourceX},${sourceY} Q${controlX},${controlY} ${targetX},${targetY}`;
+            },
+            
+            getCurvedMidpoint(source, target) {
+                const dx = target.x - source.x;
+                const dy = target.y - source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx);
+                
+                // Calculate midpoint along the curve
+                const midX = (source.x + target.x) / 2;
+                const midY = (source.y + target.y) / 2;
+                const offset = dr * 0.15; // Same curve amount as in createCurvedPath
+                
+                // Offset the label position to follow the curve
+                return {
+                    x: midX - offset * Math.sin(angle) * 0.5,
+                    y: midY + offset * Math.cos(angle) * 0.5
+                };
+            },
+            
+            dragLabel() {
+                function dragstarted(event, d) {
+                    d3.select(this).raise().style('cursor', 'grabbing');
+                }
+                
+                function dragged(event, d) {
+                    d.x = event.x;
+                    d.y = event.y;
+                    d3.select(this).attr('transform', `translate(${d.x}, ${d.y})`);
+                }
+                
+                function dragended(event, d) {
+                    d3.select(this).style('cursor', 'move');
+                }
+                
+                return d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended);
+            },
+            
+            drag() {
+                function dragstarted(event, d) {
+                    d3.select(this).raise().classed('dragging', true);
+                }
+                
+                function dragged(event, d) {
+                    d.x = event.x;
+                    d.y = event.y;
+                    d3.select(this).attr('transform', `translate(${d.x}, ${d.y})`);
+                    
+                    // Update connected links with proper path recalculation
+                    d3.selectAll('.link')
+                        .filter(l => l.source === d.id || l.target === d.id)
+                        .attr('d', l => networkVis.createCurvedPath(l));
+                    
+                    // Update link labels
+                    app.network.links.forEach((link, i) => {
+                        if (link.source === d.id || link.target === d.id) {
+                            const source = app.network.nodes.find(n => n.id === link.source);
+                            const target = app.network.nodes.find(n => n.id === link.target);
+                            const midPoint = networkVis.getCurvedMidpoint(source, target);
+                            
+                            d3.select('.link-labels').select(`g:nth-child(${i + 1})`)
+                                .attr('transform', `translate(${midPoint.x}, ${midPoint.y})`);
+                        }
+                    });
+                }
+                
+                function dragended(event, d) {
+                    d3.select(this).classed('dragging', false);
+                }
+                
+                return d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended);
+            },
+            
+            showTooltip(event, d) {
+                const tooltip = document.getElementById('tooltip');
+                
+                let content = `<strong>${d.bank}-${d.account}</strong><br>`;
+                content += d.name ? `ชื่อ: ${d.name}<br>` : '';
+                
+                // Format personal ID as text to avoid scientific notation
+                if (d.personalId) {
+                    const idText = d.personalId.toString();
+                    content += `ID: ${idText}<br>`;
+                }
+                
+                content += `<hr style="margin: 5px 0; opacity: 0.3;">`;
+                
+                // Separate transaction counts
+                const incomingCount = app.network.links.filter(l => l.target === d.id)
+                    .reduce((sum, l) => sum + l.transactions.length, 0);
+                const outgoingCount = app.network.links.filter(l => l.source === d.id)
+                    .reduce((sum, l) => sum + l.transactions.length, 0);
+                
+                content += `ธุรกรรมรับเงิน: ${incomingCount} รายการ<br>`;
+                content += `ธุรกรรมโอนเงิน: ${outgoingCount} รายการ<br>`;
+                content += `<hr style="margin: 5px 0; opacity: 0.3;">`;
+                content += `ยอดรับเงิน: ฿${utils.formatAmount(d.totalIn)}<br>`;
+                content += `ยอดโอนเงิน: ฿${utils.formatAmount(d.totalOut)}`;
+                
+                if (d.isVictim) {
+                    content += `<br><span style="color: #4caf50; font-weight: 600;">*** ผู้เสียหาย ***</span>`;
+                }
+                
+                // Add indicator if pinned
+                if (app.pinnedNode === d.id) {
+                    content += `<br><span style="color: #1a73e8; font-size: 0.75rem;">📌 คลิกอีกครั้งเพื่อซ่อน</span>`;
+                }
+                
+                tooltip.innerHTML = content;
+                tooltip.style.display = 'block';
+                tooltip.style.left = (event.pageX + 10) + 'px';
+                tooltip.style.top = (event.pageY + 10) + 'px';
+            },
+            
+            hideTooltip() {
+                document.getElementById('tooltip').style.display = 'none';
+            },
+            
+            fitToScreen() {
+                const bounds = app.g.node().getBBox();
+                const parent = app.svg.node().parentElement;
+                const fullWidth = parent.clientWidth;
+                const fullHeight = parent.clientHeight;
+                const width = bounds.width;
+                const height = bounds.height;
+                const midX = bounds.x + width / 2;
+                const midY = bounds.y + height / 2;
+                
+                if (width === 0 || height === 0) return;
+                
+                const scale = 0.9 / Math.max(width / fullWidth, height / fullHeight);
+                const translate = [fullWidth / 2 - scale * midX, fullHeight / 2 - scale * midY];
+                
+                app.svg.transition().duration(750).call(
+                    app.zoom.transform,
+                    d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale)
+                );
+            }
+        };
+
+        // Data processor
+        const dataProcessor = {
+            async readFile(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    
+                    reader.onload = (e) => {
+                        try {
+                            const data = new Uint8Array(e.target.result);
+                            const workbook = XLSX.read(data, { type: 'array' });
+                            const firstSheet = workbook.SheetNames[0];
+                            const worksheet = workbook.Sheets[firstSheet];
+                            const jsonData = XLSX.utils.sheet_to_json(worksheet, { 
+                                raw: false,
+                                defval: '',
+                                blankrows: true
+                            });
+                            
+                            // Clean column names
+                            const cleanedData = jsonData.map(row => {
+                                const cleanRow = {};
+                                for (let key in row) {
+                                    const cleanKey = key.trim();
+                                    cleanRow[cleanKey] = row[key];
+                                }
+                                return cleanRow;
+                            });
+                            
+                            resolve(cleanedData);
+                        } catch (error) {
+                            reject(error);
+                        }
+                    };
+                    
+                    reader.onerror = reject;
+                    reader.readAsArrayBuffer(file);
+                });
+            },
+            
+            processTransactions(rawData) {
+                const transactions = [];
+                
+                rawData.forEach((row, index) => {
+                    const date = utils.parseDate(row.transfer_date);
+                    const time = utils.parseTime(row.transfer_time);
+                    const timestamp = date ? date.getTime() : Date.now();
+                    
+                    transactions.push({
+                        id: index,
+                        source: `${row.from_bank_short_name}-${row.from_account_no}`,
+                        sourceName: row.from_account_name || '',
+                        sourceBank: row.from_bank_short_name,
+                        sourceAccount: row.from_account_no,
+                        target: `${row.to_bank_short_name}-${row.to_account_no}`,
+                        targetName: row.to_account_name || `${row.first_name || ''} ${row.last_name || ''}`.trim(),
+                        targetBank: row.to_bank_short_name,
+                        targetAccount: row.to_account_no,
+                        targetId: row.to_id ? row.to_id.toString() : '', // Ensure it's a string
+                        amount: utils.parseAmount(row.transfer_amount),
+                        date,
+                        time,
+                        timestamp,
+                        description: row.transfer_description || ''
+                    });
+                });
+                
+                // Sort by timestamp
+                transactions.sort((a, b) => a.timestamp - b.timestamp);
+                
+                return transactions;
+            },
+            
+            buildNetwork(transactions) {
+                const nodes = new Map();
+                const linkMap = new Map();
+                
+                // Create nodes and aggregate transactions
+                transactions.forEach((tx, index) => {
+                    // Source node
+                    if (!nodes.has(tx.source)) {
+                        nodes.set(tx.source, {
+                            id: tx.source,
+                            bank: tx.sourceBank,
+                            account: tx.sourceAccount,
+                            name: tx.sourceName,
+                            isVictim: index === 0, // First transaction source is victim
+                            transactionCount: 0,
+                            totalIn: 0,
+                            totalOut: 0
+                        });
+                    }
+                    
+                    // Target node
+                    if (!nodes.has(tx.target)) {
+                        nodes.set(tx.target, {
+                            id: tx.target,
+                            bank: tx.targetBank,
+                            account: tx.targetAccount,
+                            name: tx.targetName,
+                            personalId: tx.targetId ? tx.targetId.toString() : '', // Ensure it's a string
+                            isVictim: false,
+                            transactionCount: 0,
+                            totalIn: 0,
+                            totalOut: 0
+                        });
+                    }
+                    
+                    // Update node statistics
+                    nodes.get(tx.source).transactionCount++;
+                    nodes.get(tx.source).totalOut += tx.amount;
+                    nodes.get(tx.target).transactionCount++;
+                    nodes.get(tx.target).totalIn += tx.amount;
+                    
+                    // Create or update link
+                    const linkKey = `${tx.source}->${tx.target}`;
+                    if (!linkMap.has(linkKey)) {
+                        linkMap.set(linkKey, {
+                            source: tx.source,
+                            target: tx.target,
+                            transactions: [],
+                            totalAmount: 0
+                        });
+                    }
+                    
+                    const link = linkMap.get(linkKey);
+                    link.transactions.push({
+                        date: tx.date,
+                        time: tx.time,
+                        amount: tx.amount,
+                        description: tx.description
+                    });
+                    link.totalAmount += tx.amount;
+                });
+                
+                // Convert to arrays
+                const nodesArray = Array.from(nodes.values());
+                const linksArray = Array.from(linkMap.values());
+                
+                return {
+                    nodes: nodesArray,
+                    links: linksArray
+                };
+            }
+        };
+
+        // UI controllers
+        const ui = {
+            init() {
+                // File input
+                document.getElementById('fileInput').addEventListener('change', (e) => {
+                    const file = e.target.files[0];
+                    if (file) this.handleFile(file);
+                });
+                
+                // Buttons
+                document.getElementById('analyzeBtn').addEventListener('click', () => this.analyze());
+                document.getElementById('zoomInBtn').addEventListener('click', () => {
+                    app.svg.transition().call(app.zoom.scaleBy, 1.3);
+                });
+                document.getElementById('zoomOutBtn').addEventListener('click', () => {
+                    app.svg.transition().call(app.zoom.scaleBy, 0.7);
+                });
+                document.getElementById('fitBtn').addEventListener('click', () => {
+                    networkVis.fitToScreen();
+                });
+                document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+            },
+            
+            handleFile(file) {
+                document.getElementById('fileName').textContent = file.name;
+                document.getElementById('fileInfo').style.display = 'flex';
+                document.getElementById('analyzeBtn').disabled = false;
+                app.data = file;
+            },
+            
+            async analyze() {
+                if (!app.data) return;
+                
+                try {
+                    this.showLoading(true);
+                    
+                    // Read and process data
+                    const rawData = await dataProcessor.readFile(app.data);
+                    const transactions = dataProcessor.processTransactions(rawData);
+                    const network = dataProcessor.buildNetwork(transactions);
+                    
+                    app.network = network;
+                    
+                    // Render network
+                    networkVis.render(network);
+                    
+                } catch (error) {
+                    console.error('Analysis error:', error);
+                    alert('เกิดข้อผิดพลาด: ' + error.message);
+                } finally {
+                    this.showLoading(false);
+                }
+            },
+            
+            showLoading(show) {
+                document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+            },
+            
+            reset() {
+                app.data = null;
+                app.network = null;
+                app.pinnedNode = null;
+                
+                document.getElementById('fileInput').value = '';
+                document.getElementById('fileInfo').style.display = 'none';
+                document.getElementById('analyzeBtn').disabled = true;
+                
+                if (app.svg) {
+                    app.svg.selectAll('*').remove();
+                }
+            }
+        };
+
+        // Initialize application
+        document.addEventListener('DOMContentLoaded', () => {
+            ui.init();
+        });
+    </script>
+</body>
+</html>
