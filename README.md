@@ -1,4 +1,4 @@
-# CFR Visualizer v3
+# CFR Visualizer 
 
 **Enhanced Money Flow Investigation Tool**
 
