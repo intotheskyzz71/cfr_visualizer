@@ -162,10 +162,278 @@
             right: 20px;
             background: white;
             border-radius: 8px;
-            padding: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            min-width: 200px;
+            max-width: 250px;
+        }
+        
+        .control-section {
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .control-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .control-label {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 0.8rem;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .control-group {
             display: flex;
-            gap: 10px;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        /* Context Menu Styles */
+        .context-menu {
+            position: absolute;
+            background: white;
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            border: 1px solid #e0e0e0;
+            z-index: 10000;
+            display: none;
+            min-width: 120px;
+        }
+        
+        .context-menu-section {
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .context-menu-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .context-menu-label {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 0.7rem;
+            color: #666;
+            font-weight: 600;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .theme-icons {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+        }
+        
+        .theme-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        
+        .theme-icon:hover {
+            transform: scale(1.1);
+            border-color: rgba(26, 115, 232, 0.5);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .theme-icon.active {
+            border-color: #1a73e8;
+            border-width: 3px;
+            transform: scale(1.05);
+        }
+        
+        .theme-icon.dark { background: linear-gradient(135deg, #2c3e50, #34495e); }
+        .theme-icon.red { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .theme-icon.yellow { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .theme-icon.gray { background: linear-gradient(135deg, #95a5a6, #7f8c8d); }
+        
+        .action-icons {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .action-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+        }
+        
+        .action-icon:hover {
+            transform: scale(1.05);
+            border-color: #ff5252;
+            background: #fff5f5;
+            box-shadow: 0 2px 8px rgba(255, 82, 82, 0.2);
+        }
+        
+        .action-icon svg {
+            color: #ff5252;
+            transition: color 0.2s ease;
+        }
+        
+        .action-icon:hover svg {
+            color: #d32f2f;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+        
+        /* Contact Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .modal-title {
+            font-family: 'Sarabun', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a73e8;
+            margin: 0;
+        }
+        
+        .modal-content {
+            font-family: 'Sarabun', sans-serif;
+            line-height: 1.8;
+            color: #333;
+        }
+        
+        .contact-info {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+        
+        .contact-info p {
+            margin: 8px 0;
+            font-size: 0.95rem;
+        }
+        
+        .contact-name {
+            font-weight: 700;
+            color: #1a73e8;
+            font-size: 1.1rem !important;
+        }
+        
+        .contact-position {
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem !important;
+        }
+        
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 6px 0 !important;
+        }
+        
+        .contact-detail svg {
+            color: #1a73e8;
+            flex-shrink: 0;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-close:hover {
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        .node-rect.theme-dark { fill: #34495e; stroke: #2c3e50; stroke-width: 2; }
+        .node-rect.theme-red { fill: #fadbd8; stroke: #e74c3c; stroke-width: 2; }
+        .node-rect.theme-yellow { fill: #fef9e7; stroke: #f39c12; stroke-width: 2; }
+        .node-rect.theme-gray { fill: #f8f9fa; stroke: #95a5a6; stroke-width: 2; }
+        
+        .deleted-node {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        .deleted-node .node-rect {
+            fill: #ff6b6b;
+            stroke: #ff5252;
+            stroke-dasharray: 5,5;
         }
         
         /* Network styles */
@@ -287,12 +555,11 @@
                         <path d="M12 2v10l6 6"/>
                     </svg>
                     CFR Visualizer
-                    <span class="version-badge">v3.0</span>
                 </h1>
                 
                 <div class="file-controls">
                     <div class="file-input-wrapper">
-                        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv">
+                        <input type="file" id="fileInput" accept=".xlsx,.xls,.csv" multiple>
                         <label for="fileInput" class="btn btn-primary">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -318,6 +585,16 @@
                     </button>
                 </div>
             </div>
+            
+            <div class="header-right">
+                <button class="btn btn-secondary" id="contactBtn" title="ติดต่อผู้พัฒนา">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                        <circle cx="12" cy="17" r="0.5" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
         </div>
         
         <div class="main-content">
@@ -326,32 +603,38 @@
             </div>
             
             <div class="controls-overlay">
-                <button class="btn btn-secondary" id="zoomInBtn" title="ซูมเข้า">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="m21 21-4.35-4.35"/>
-                        <line x1="11" y1="8" x2="11" y2="14"/>
-                        <line x1="8" y1="11" x2="14" y2="11"/>
-                    </svg>
-                </button>
-                <button class="btn btn-secondary" id="zoomOutBtn" title="ซูมออก">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="11" cy="11" r="8"/>
-                        <path d="m21 21-4.35-4.35"/>
-                        <line x1="8" y1="11" x2="14" y2="11"/>
-                    </svg>
-                </button>
-                <button class="btn btn-secondary" id="fitBtn" title="พอดีหน้าจอ">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
-                    </svg>
-                </button>
-                <button class="btn btn-secondary" id="resetBtn" title="รีเซ็ต">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="1 4 1 10 7 10"/>
-                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
-                    </svg>
-                </button>
+                <div class="control-section">
+                    <div class="control-label">การซูม</div>
+                    <div class="control-group">
+                        <button class="btn btn-secondary" id="zoomInBtn" title="ซูมเข้า">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                                <line x1="11" y1="8" x2="11" y2="14"/>
+                                <line x1="8" y1="11" x2="14" y2="11"/>
+                            </svg>
+                        </button>
+                        <button class="btn btn-secondary" id="zoomOutBtn" title="ซูมออก">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="m21 21-4.35-4.35"/>
+                                <line x1="8" y1="11" x2="14" y2="11"/>
+                            </svg>
+                        </button>
+                        <button class="btn btn-secondary" id="fitBtn" title="พอดีหน้าจอ">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                            </svg>
+                        </button>
+                        <button class="btn btn-secondary" id="resetBtn" title="รีเซ็ต">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="1 4 1 10 7 10"/>
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
             </div>
             
             <div class="loading-overlay" id="loadingOverlay" style="display: none;">
@@ -365,18 +648,80 @@
     
     <div class="tooltip" id="tooltip"></div>
     
+    <!-- Contact Modal -->
+    <div class="modal-overlay" id="contactModal">
+        <div class="modal">
+            <button class="modal-close" id="closeModal">&times;</button>
+            <div class="modal-header">
+                <h2 class="modal-title">พบปัญหา / ติดต่อผู้พัฒนาระบบ</h2>
+            </div>
+            <div class="modal-content">
+                <div class="contact-info">
+                    <p class="contact-name">ร.ต.อ.พลวัฒน์ วิริยะโชติวิบูล</p>
+                    <p class="contact-position">รอง สว.(สอบสวน) กก.3 บก.สอท.1</p>
+                    <div class="contact-detail">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                        <span>โทร 086-445-9351</span>
+                    </div>
+                    <div class="contact-detail">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                        </svg>
+                        <span>LINE ID: bpp9351</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Context Menu -->
+    <div class="context-menu" id="contextMenu">
+        <div class="context-menu-section">
+            <div class="context-menu-label">สี</div>
+            <div class="theme-icons">
+                <div class="theme-icon dark" data-theme="dark" title="เข้ม">●</div>
+                <div class="theme-icon red" data-theme="red" title="แดง">●</div>
+                <div class="theme-icon yellow" data-theme="yellow" title="เหลือง">●</div>
+                <div class="theme-icon gray" data-theme="gray" title="เทา">●</div>
+            </div>
+        </div>
+        <div class="context-menu-section">
+            <div class="context-menu-label">การจัดการ</div>
+            <div class="action-icons">
+                <div class="action-icon" id="deleteNode" title="ลบ/กู้คืน Node">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"/>
+                        <path d="m19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                        <line x1="10" y1="11" x2="10" y2="17"/>
+                        <line x1="14" y1="11" x2="14" y2="17"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
         // Application state
         const app = {
-            data: null,
+            data: [],
             network: null,
             simulation: null,
             zoom: null,
             svg: null,
             g: null,
-            pinnedNode: null // Track clicked node for persistent tooltip
+            pinnedNode: null,
+            currentTheme: 'dark',
+            deletedNodes: new Set(),
+            contextMenu: {
+                visible: false,
+                targetNode: null,
+                x: 0,
+                y: 0
+            }
         };
 
         // Utility functions
@@ -584,19 +929,27 @@
                 // Calculate hierarchical layout
                 const layers = this.calculateLayers(data.nodes, data.links);
                 
-                // Position nodes
-                const nodeSpacing = 220;
-                const layerSpacing = 180;
-                const startY = 100;
+                // Enhanced positioning with collision avoidance
+                const nodeSpacing = 280; // Increased spacing
+                const layerSpacing = 220; // Increased layer spacing
+                const startY = 120;
+                const maxNodesPerRow = 6; // Limit nodes per row
                 
                 layers.forEach((layer, layerIndex) => {
-                    const layerWidth = layer.length * nodeSpacing;
-                    const startX = (width - layerWidth) / 2 + nodeSpacing / 2;
+                    // Split large layers into multiple rows
+                    const rows = this.splitIntoRows(layer, maxNodesPerRow);
                     
-                    layer.forEach((node, nodeIndex) => {
-                        node.x = startX + nodeIndex * nodeSpacing;
-                        node.y = startY + layerIndex * layerSpacing;
-                        node.layer = layerIndex;
+                    rows.forEach((row, rowIndex) => {
+                        const rowWidth = row.length * nodeSpacing;
+                        const startX = (width - rowWidth) / 2 + nodeSpacing / 2;
+                        const currentY = startY + layerIndex * layerSpacing + rowIndex * 100;
+                        
+                        row.forEach((node, nodeIndex) => {
+                            node.x = startX + nodeIndex * nodeSpacing;
+                            node.y = currentY;
+                            node.layer = layerIndex;
+                            node.row = rowIndex;
+                        });
                     });
                 });
                 
@@ -761,24 +1114,37 @@
                     .on('click', (event, d) => {
                         event.stopPropagation();
                         
+                        // Hide context menu if visible
+                        this.hideContextMenu();
+                        
                         // Toggle pinned tooltip
                         if (app.pinnedNode === d.id) {
-                            // Unpin if clicking the same node
                             app.pinnedNode = null;
                             this.hideTooltip();
                         } else {
-                            // Pin tooltip to this node
                             app.pinnedNode = d.id;
                             this.showTooltip(event, d);
                         }
+                    })
+                    .on('contextmenu', (event, d) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        
+                        // Hide tooltip if visible
+                        this.hideTooltip();
+                        app.pinnedNode = null;
+                        
+                        // Show context menu
+                        this.showContextMenu(event, d);
                     });
                 
-                // Click on background to clear pinned tooltip
+                // Click on background to clear pinned tooltip and context menu
                 app.svg.on('click', () => {
                     if (app.pinnedNode) {
                         app.pinnedNode = null;
                         this.hideTooltip();
                     }
+                    this.hideContextMenu();
                 });
                 
                 links.on('mouseover', function(event, d) {
@@ -796,6 +1162,14 @@
                 
                 // Fit to screen
                 setTimeout(() => this.fitToScreen(), 500);
+            },
+            
+            splitIntoRows(layer, maxNodesPerRow) {
+                const rows = [];
+                for (let i = 0; i < layer.length; i += maxNodesPerRow) {
+                    rows.push(layer.slice(i, i + maxNodesPerRow));
+                }
+                return rows;
             },
             
             calculateLayers(nodes, links) {
@@ -880,7 +1254,7 @@
                 }
                 
                 // Calculate end point (edge of target node - accounting for arrow)
-                const arrowOffset = 2; // Small offset to prevent arrow overlapping node
+                const arrowOffset = 2;
                 let targetX, targetY;
                 if (Math.abs(dx) > Math.abs(dy) * (nodeWidth / nodeHeight)) {
                     // Enter from left or right side
@@ -892,16 +1266,35 @@
                     targetY = target.y - (dy > 0 ? nodeHeight / 2 + arrowOffset : -nodeHeight / 2 - arrowOffset);
                 }
                 
-                // Create curved path
+                // Enhanced curve calculation to avoid overlaps
                 const midX = (sourceX + targetX) / 2;
                 const midY = (sourceY + targetY) / 2;
-                const offset = dr * 0.15; // Curve amount
                 
-                // Control point for quadratic curve
-                const controlX = midX - offset * Math.sin(angle);
-                const controlY = midY + offset * Math.cos(angle);
+                // Dynamic curve offset based on distance and potential overlaps
+                let offset = Math.max(dr * 0.2, 50); // Minimum curve
                 
-                return `M${sourceX},${sourceY} Q${controlX},${controlY} ${targetX},${targetY}`;
+                // Check if nodes are in same row/layer (horizontal) - use more curve
+                if (Math.abs(source.y - target.y) < 50) {
+                    offset = Math.max(offset, 80);
+                }
+                
+                // Check for potential overlaps with other links - add randomness
+                const linkIndex = app.network.links.indexOf(d);
+                const variation = (linkIndex % 3 - 1) * 20; // -20, 0, or 20
+                offset += variation;
+                
+                // Control points for smoother S-curve
+                const controlX1 = midX - offset * Math.sin(angle);
+                const controlY1 = midY + offset * Math.cos(angle);
+                
+                // For long distances, use cubic bezier for smoother curves
+                if (dr > 300) {
+                    const controlX2 = midX + offset * 0.3 * Math.sin(angle);
+                    const controlY2 = midY - offset * 0.3 * Math.cos(angle);
+                    return `M${sourceX},${sourceY} C${controlX1},${controlY1} ${controlX2},${controlY2} ${targetX},${targetY}`;
+                } else {
+                    return `M${sourceX},${sourceY} Q${controlX1},${controlY1} ${targetX},${targetY}`;
+                }
             },
             
             getCurvedMidpoint(source, target) {
@@ -1045,6 +1438,128 @@
                     app.zoom.transform,
                     d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale)
                 );
+            },
+            
+            toggleNodeDeletion(nodeId) {
+                if (app.deletedNodes.has(nodeId)) {
+                    // Restore node
+                    app.deletedNodes.delete(nodeId);
+                } else {
+                    // Delete node
+                    app.deletedNodes.add(nodeId);
+                }
+                
+                // Update visual state
+                d3.selectAll('.node')
+                    .classed('deleted-node', d => app.deletedNodes.has(d.id));
+                
+                // Update links connected to deleted nodes
+                d3.selectAll('.link')
+                    .style('opacity', d => {
+                        const sourceDeleted = app.deletedNodes.has(d.source);
+                        const targetDeleted = app.deletedNodes.has(d.target);
+                        return (sourceDeleted || targetDeleted) ? 0.1 : 0.6;
+                    });
+                    
+                // Update link labels
+                d3.selectAll('.link-labels g')
+                    .style('opacity', function() {
+                        const linkData = d3.select('.link').datum();
+                        if (!linkData) return 1;
+                        const sourceDeleted = app.deletedNodes.has(linkData.source);
+                        const targetDeleted = app.deletedNodes.has(linkData.target);
+                        return (sourceDeleted || targetDeleted) ? 0.1 : 1;
+                    });
+            },
+            
+            applyThemeToNodes(theme) {
+                // Update all nodes with new theme
+                app.network.nodes.forEach(node => {
+                    if (!node.isVictim) {
+                        node.theme = theme;
+                    }
+                });
+                
+                // Re-render node rectangles
+                d3.selectAll('.node .node-rect')
+                    .attr('class', d => {
+                        let classes = 'node-rect';
+                        if (d.isVictim) classes += ' victim';
+                        else if (d.layer > 0 && d.layer < app.network.layers?.length - 1) classes += ' intermediate';
+                        
+                        // Add theme class for non-victim nodes
+                        if (!d.isVictim && d.theme) classes += ` theme-${d.theme}`;
+                        
+                        return classes;
+                    });
+            },
+            
+            applyThemeToSingleNode(nodeId, theme) {
+                // Update specific node theme
+                const node = app.network.nodes.find(n => n.id === nodeId);
+                if (node && !node.isVictim) {
+                    node.theme = theme;
+                    
+                    // Re-render this node's rectangle
+                    d3.selectAll('.node')
+                        .filter(d => d.id === nodeId)
+                        .select('.node-rect')
+                        .attr('class', d => {
+                            let classes = 'node-rect';
+                            if (d.isVictim) classes += ' victim';
+                            else if (d.layer > 0 && d.layer < app.network.layers?.length - 1) classes += ' intermediate';
+                            
+                            // Add theme class
+                            if (!d.isVictim && d.theme) classes += ` theme-${d.theme}`;
+                            
+                            return classes;
+                        });
+                }
+            },
+            
+            showContextMenu(event, node) {
+                const contextMenu = document.getElementById('contextMenu');
+                app.contextMenu.targetNode = node;
+                app.contextMenu.visible = true;
+                
+                // Position context menu
+                const x = event.pageX || event.clientX;
+                const y = event.pageY || event.clientY;
+                
+                contextMenu.style.left = x + 'px';
+                contextMenu.style.top = y + 'px';
+                contextMenu.style.display = 'block';
+                
+                // Update theme icons to show current node theme
+                document.querySelectorAll('.theme-icon').forEach(icon => {
+                    const theme = icon.dataset.theme;
+                    if (node.theme === theme) {
+                        icon.classList.add('active');
+                    } else {
+                        icon.classList.remove('active');
+                    }
+                });
+                
+                // Position adjustment to keep menu on screen
+                setTimeout(() => {
+                    const rect = contextMenu.getBoundingClientRect();
+                    const windowWidth = window.innerWidth;
+                    const windowHeight = window.innerHeight;
+                    
+                    if (rect.right > windowWidth) {
+                        contextMenu.style.left = (x - rect.width) + 'px';
+                    }
+                    if (rect.bottom > windowHeight) {
+                        contextMenu.style.top = (y - rect.height) + 'px';
+                    }
+                }, 0);
+            },
+            
+            hideContextMenu() {
+                const contextMenu = document.getElementById('contextMenu');
+                contextMenu.style.display = 'none';
+                app.contextMenu.visible = false;
+                app.contextMenu.targetNode = null;
             }
         };
 
@@ -1087,56 +1602,72 @@
                 });
             },
             
-            processTransactions(rawData) {
-                const transactions = [];
+            processTransactions(rawDataArray) {
+                const allTransactions = [];
+                let globalIndex = 0;
                 
-                rawData.forEach((row, index) => {
-                    const date = utils.parseDate(row.transfer_date);
-                    const time = utils.parseTime(row.transfer_time);
-                    const timestamp = date ? date.getTime() : Date.now();
-                    
-                    transactions.push({
-                        id: index,
-                        source: `${row.from_bank_short_name}-${row.from_account_no}`,
-                        sourceName: row.from_account_name || '',
-                        sourceBank: row.from_bank_short_name,
-                        sourceAccount: row.from_account_no,
-                        target: `${row.to_bank_short_name}-${row.to_account_no}`,
-                        targetName: row.to_account_name || `${row.first_name || ''} ${row.last_name || ''}`.trim(),
-                        targetBank: row.to_bank_short_name,
-                        targetAccount: row.to_account_no,
-                        targetId: row.to_id ? row.to_id.toString() : '', // Ensure it's a string
-                        amount: utils.parseAmount(row.transfer_amount),
-                        date,
-                        time,
-                        timestamp,
-                        description: row.transfer_description || ''
+                // Process multiple files
+                rawDataArray.forEach((rawData, fileIndex) => {
+                    rawData.forEach((row, rowIndex) => {
+                        const date = utils.parseDate(row.transfer_date);
+                        const time = utils.parseTime(row.transfer_time);
+                        const timestamp = date ? date.getTime() : Date.now();
+                        
+                        allTransactions.push({
+                            id: globalIndex++,
+                            fileIndex,
+                            source: `${row.from_bank_short_name}-${row.from_account_no}`,
+                            sourceName: row.from_account_name || '',
+                            sourceBank: row.from_bank_short_name,
+                            sourceAccount: row.from_account_no,
+                            target: `${row.to_bank_short_name}-${row.to_account_no}`,
+                            targetName: row.to_account_name || `${row.first_name || ''} ${row.last_name || ''}`.trim(),
+                            targetBank: row.to_bank_short_name,
+                            targetAccount: row.to_account_no,
+                            targetId: row.to_id ? row.to_id.toString() : '',
+                            amount: utils.parseAmount(row.transfer_amount),
+                            date,
+                            time,
+                            timestamp,
+                            description: row.transfer_description || ''
+                        });
                     });
                 });
                 
                 // Sort by timestamp
-                transactions.sort((a, b) => a.timestamp - b.timestamp);
+                allTransactions.sort((a, b) => a.timestamp - b.timestamp);
                 
-                return transactions;
+                return allTransactions;
             },
             
             buildNetwork(transactions) {
                 const nodes = new Map();
                 const linkMap = new Map();
+                const victimSources = new Set();
+                
+                // Identify unique file sources as potential victims
+                const fileVictims = new Set();
+                transactions.forEach(tx => {
+                    if (tx.fileIndex !== undefined) {
+                        fileVictims.add(tx.source);
+                    }
+                });
                 
                 // Create nodes and aggregate transactions
                 transactions.forEach((tx, index) => {
                     // Source node
                     if (!nodes.has(tx.source)) {
+                        const isVictim = fileVictims.has(tx.source) || index === 0;
                         nodes.set(tx.source, {
                             id: tx.source,
                             bank: tx.sourceBank,
                             account: tx.sourceAccount,
                             name: tx.sourceName,
-                            isVictim: index === 0, // First transaction source is victim
+                            isVictim: isVictim,
                             transactionCount: 0,
                             totalIn: 0,
-                            totalOut: 0
+                            totalOut: 0,
+                            theme: app.currentTheme
                         });
                     }
                     
@@ -1147,11 +1678,12 @@
                             bank: tx.targetBank,
                             account: tx.targetAccount,
                             name: tx.targetName,
-                            personalId: tx.targetId ? tx.targetId.toString() : '', // Ensure it's a string
+                            personalId: tx.targetId ? tx.targetId.toString() : '',
                             isVictim: false,
                             transactionCount: 0,
                             totalIn: 0,
-                            totalOut: 0
+                            totalOut: 0,
+                            theme: app.currentTheme
                         });
                     }
                     
@@ -1196,10 +1728,10 @@
         // UI controllers
         const ui = {
             init() {
-                // File input
+                // File input - handle multiple files
                 document.getElementById('fileInput').addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    if (file) this.handleFile(file);
+                    const files = Array.from(e.target.files);
+                    if (files.length > 0) this.handleFiles(files);
                 });
                 
                 // Buttons
@@ -1214,24 +1746,100 @@
                     networkVis.fitToScreen();
                 });
                 document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+                
+                // Contact button
+                document.getElementById('contactBtn').addEventListener('click', () => this.showContactModal());
+                
+                // Context menu event listeners
+                this.setupContextMenu();
             },
             
-            handleFile(file) {
-                document.getElementById('fileName').textContent = file.name;
+            handleFiles(files) {
+                const fileNames = files.map(f => f.name).join(', ');
+                document.getElementById('fileName').textContent = `${files.length} ไฟล์: ${fileNames}`;
                 document.getElementById('fileInfo').style.display = 'flex';
                 document.getElementById('analyzeBtn').disabled = false;
-                app.data = file;
+                app.data = files;
+            },
+            
+            setupContextMenu() {
+                // Theme icon clicks in context menu
+                document.querySelectorAll('.theme-icon').forEach(icon => {
+                    icon.addEventListener('click', (e) => {
+                        const theme = e.target.dataset.theme;
+                        if (app.contextMenu.targetNode) {
+                            networkVis.applyThemeToSingleNode(app.contextMenu.targetNode.id, theme);
+                            
+                            // Update active state
+                            document.querySelectorAll('.theme-icon').forEach(i => i.classList.remove('active'));
+                            e.target.classList.add('active');
+                        }
+                        networkVis.hideContextMenu();
+                    });
+                });
+                
+                // Delete node button in context menu
+                document.getElementById('deleteNode').addEventListener('click', () => {
+                    if (app.contextMenu.targetNode) {
+                        networkVis.toggleNodeDeletion(app.contextMenu.targetNode.id);
+                    }
+                    networkVis.hideContextMenu();
+                });
+                
+                // Hide context menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.context-menu') && !e.target.closest('.node')) {
+                        networkVis.hideContextMenu();
+                    }
+                });
+                
+                // Prevent context menu on right click outside nodes
+                document.addEventListener('contextmenu', (e) => {
+                    if (!e.target.closest('.node')) {
+                        networkVis.hideContextMenu();
+                    }
+                });
+            },
+            
+            showContactModal() {
+                const modal = document.getElementById('contactModal');
+                modal.style.display = 'flex';
+                setTimeout(() => modal.classList.add('show'), 10);
+                
+                // Setup modal close events
+                document.getElementById('closeModal').onclick = () => this.hideContactModal();
+                modal.onclick = (e) => {
+                    if (e.target === modal) this.hideContactModal();
+                };
+                
+                // ESC key to close
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') this.hideContactModal();
+                });
+            },
+            
+            hideContactModal() {
+                const modal = document.getElementById('contactModal');
+                modal.classList.remove('show');
+                setTimeout(() => modal.style.display = 'none', 300);
             },
             
             async analyze() {
-                if (!app.data) return;
+                if (!app.data || app.data.length === 0) return;
                 
                 try {
                     this.showLoading(true);
                     
-                    // Read and process data
-                    const rawData = await dataProcessor.readFile(app.data);
-                    const transactions = dataProcessor.processTransactions(rawData);
+                    // Read and process data from multiple files
+                    const rawDataArray = [];
+                    const files = Array.isArray(app.data) ? app.data : [app.data];
+                    
+                    for (const file of files) {
+                        const rawData = await dataProcessor.readFile(file);
+                        rawDataArray.push(rawData);
+                    }
+                    
+                    const transactions = dataProcessor.processTransactions(rawDataArray);
                     const network = dataProcessor.buildNetwork(transactions);
                     
                     app.network = network;
@@ -1252,13 +1860,17 @@
             },
             
             reset() {
-                app.data = null;
+                app.data = [];
                 app.network = null;
                 app.pinnedNode = null;
+                app.deletedNodes.clear();
                 
                 document.getElementById('fileInput').value = '';
                 document.getElementById('fileInfo').style.display = 'none';
                 document.getElementById('analyzeBtn').disabled = true;
+                
+                // Hide context menu
+                networkVis.hideContextMenu();
                 
                 if (app.svg) {
                     app.svg.selectAll('*').remove();
